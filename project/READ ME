@@ -1,4 +1,4 @@
-# Project3 | Maze  | What you need to know
+# Project3 LCD Toy
 
 ## Interacting with the MSP-430
 ### Button Presses
@@ -6,23 +6,15 @@
 - Pressing button S2 turns moves the player down
 - Pressing button S3 turns moves the player up
 - Pressing button S4 turns moves the player to the right
-## Common commands
-- compiling the code:
-  ```$ make```
-    - loading code into MSP-430:
-      ```$ make load```
-      ## Functions of the system
-      1. Every button press changes the player to a different possition
-      2. Timer starts as soon as the game is loaded
+
+## To Run game 
+- cd Into the project folder
+- make load
+- Enjoy
       
 ##OBJECTIVE
 The objective of this game is to get the player across the maze unto the winning door.
-In order to win you must get the player to the door without colliding with the maze and doing it under 30 sec. 
-If the player looses, the game will load a screen saying that the player lost and a melody.
-If the player wins, the game will load a screen saying that  the player won with no melody.
+In order to win you must get the player to the door without hitting the walls. If you hit 150 points you lose.
+If the player loses, the game will load a screen saying that the player lost and a song.
+If the player wins, the game will load a screen saying that  the player won with no song.
 
-
-
-
-#Omar Corrales helped me by helping me understand code already given by the profesor and how to us it and assembly code.
-#Luis Sanchez helped me design my read me. 

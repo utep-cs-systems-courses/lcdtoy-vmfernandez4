@@ -2,8 +2,8 @@
 #include "libTimer.h"
 #include "buzzer.h"
 
-static unsigned int period = 1000;
-static signed int rate = 200;	
+static unsigned int period =4000;
+static signed int rate = 800;	
 
 #define MIN_PERIOD 1000
 #define MAX_PERIOD 4000
@@ -32,7 +32,7 @@ void buzzer_advance_frequency()
   if ((rate > 0 && (period > MAX_PERIOD)) || 
       (rate < 0 && (period < MIN_PERIOD))) {
     rate = -rate;
-    period += (rate << 1);
+    period += (rate << 2);
   }
   buzzer_set_period(period);
 }
@@ -44,7 +44,6 @@ void buzzer_set_period(short cycles)
 }
 
 
-    
     
   
 

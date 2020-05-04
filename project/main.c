@@ -9,21 +9,21 @@
 #include "buzzer.h"
 
 int redrawScreen = 1; 
-u_int bgColor =COLOR_BLACK;
+u_int bgColor = COLOR_BLACK;
  char str[2];
- static int sec =30; //int 
+ static int points =1; //int 
 
 //Bounds rect
 AbRectOutline fieldOutline = {
     abRectOutlineGetBounds, abRectOutlineCheck,
     {screenWidth/2-1,screenHeight/2-1},
 };
-//layerGetBounds needs this v
+//this is the line around the screen
 Layer fieldLayer ={
     (AbShape *) &fieldOutline,
     {screenWidth/2,screenHeight/2},
     {0,0}, {0,0},
-    COLOR_RED,
+    COLOR_BLUE,
     0
 };
 
@@ -31,7 +31,7 @@ Layer fieldLayer ={
 
 AbRect rect ={abRectGetBounds,abRectCheck,{45,3}};
 AbRect door ={abRectGetBounds,abRectCheck,{6,10}};
-//PLAYER
+//moving piece
 Layer layer9={
   (AbShape*)&circle3,
   {(screenWidth/2+45), (screenHeight/2+60)},
@@ -39,51 +39,51 @@ Layer layer9={
   COLOR_PURPLE,
   &fieldLayer,
 };
-//END gate ---------------------------------------
+//end door
 Layer layer5 ={
   (AbShape *)&door,
   {screenWidth/3+75, (screenHeight/2-60)},
   {0,0},{0,0},
-  COLOR_GREEN,
+  COLOR_PINK,
   &layer9
 };
-//Maze blocks------------------------------------
+//maze walls
 Layer layer4 ={
   (AbShape *)&rect,
   {screenWidth/3, (screenHeight/2-75)},
   {0,0},{0,0},
-  COLOR_RED,
+  COLOR_WHITE,
   &layer5
 };
 Layer layer3 ={
   (AbShape *)&rect,
   {screenWidth/3+40, (screenHeight/2)-45},
   {0,0},{0,0},
-  COLOR_RED,
+  COLOR_WHITE,
   &layer4
 };
 Layer layer2 ={
   (AbShape *)&rect,
   {screenWidth/3, (screenHeight/2-10)},
   {0,0},{0,0},
-  COLOR_RED,
+  COLOR_WHITE,
   &layer3
 };
 Layer layer1 ={
   (AbShape *)&rect,
   {screenWidth/3+40, (screenHeight/2)+25},
   {0,0},{0,0},
-  COLOR_RED,
+  COLOR_WHITE,
   &layer2
 };
 Layer layer0 ={
   (AbShape *)&rect,
   {screenWidth/3, (screenHeight/2)+60},
   {0,0},{0,0},
-  COLOR_RED,
+  COLOR_WHITE,
   &layer1
 };
-//MOVE layer ---------------------------------------------------------------------------------------------------
+//
 
 typedef struct MovLayer_s{
   Layer *layer;
@@ -98,7 +98,8 @@ MovLayer ml3 ={&layer2,{0,0},0};
 MovLayer ml4 ={&layer3,{0,0},0};
 MovLayer ml5 ={&layer4,{0,0},0};
 MovLayer ml6 ={&layer5,{0,0},0};
-//-------------------------------------
+
+
 void movLayerDraw(MovLayer *movLayers, Layer *layers)
 {
   int row, col;
@@ -128,12 +129,12 @@ void movLayerDraw(MovLayer *movLayers, Layer *layers)
 	  if (abShapeCheck(probeLayer->abShape, &probeLayer->pos, &pixelPos)) {
 	    color = probeLayer->color;
 	    break; 
-	  } /* if probe check */
-	} // for checking all layers at col, row
+	  }
+	} 
 	lcd_writeColor(color); 
-      } // for col
-    } // for row
-  } // for moving layer being updated
+      } 
+    } 
+  } 
 }	
 /* to move down -----------------------------
  * change velocity to + and change the axes to y */
@@ -250,64 +251,32 @@ char collisionDetection2(MovLayer *maze, MovLayer *player){
 }
 Region fieldFence;
 
-void main(){
-  configureClocks();
-  lcd_init();
-  shapeInit();
-  clearScreen(COLOR_BLACK);
-  layerInit(&layer0);
-  layerInit(&layer1);
-  layerInit(&layer2);
-  layerInit(&layer3);
-  layerInit(&layer4);
-  layerInit(&layer5);
-  layerInit(&layer9);
-  layerDraw(&layer0);
-  buzzer_init();
-  p2sw_init(15);
-  layerGetBounds(&fieldLayer, &fieldFence);
-  or_sr(0x8);
-  enableWDTInterrupts();
-  while(1){
-    while(!redrawScreen) {
-        or_sr(0x10);
-    }
-    if(sec>=1){
-    movLayerDraw(&ml0, &layer9);
-    movLayerDraw(&ml1, &layer0);
-    movLayerDraw(&ml2, &layer1);
-    movLayerDraw(&ml3, &layer2);
-    movLayerDraw(&ml4, &layer3);
-    movLayerDraw(&ml5, &layer4);
-    movLayerDraw(&ml6, &layer5);
-    redrawScreen=0;
-    }
-    }
-}
+
 void wdt_c_handler(){
   static short count =0; 
- /* if they collide, change the sec to 0 to change to loosing screen */
+ /* if they collide, change the points to 0 to change to loosing screen */
     u_int switches = p2sw_read();
       if( collisionDetection(&ml1,&ml0)||
       collisionDetection2(&ml2,&ml0)||
       collisionDetection(&ml3,&ml0)||
       collisionDetection2(&ml4,&ml0)||
       collisionDetection(&ml5,&ml0)){
-      sec=0;
+      points=150;
 
- /* if the winning rectangle detects collision, move to winning screen */
+ /* if won displays winning screen */
     }if(collisionDetection2(&ml6,&ml0)){
-      clearScreen(COLOR_GREEN);
-      drawString5x7(10,50,"WINNER.", COLOR_BLACK,COLOR_GREEN);
+      clearScreen(COLOR_PURPLE);
+      drawString5x7(40,80,"You Won!!", COLOR_BLACK,COLOR_PURPLE);
     }
-/* game over screen and the loosing melody starts */
-   if(sec==0){
+/*game lost displays lost screen and buzzes */
+   if(points==150){
        buzzer_advance_frequency();
-      clearScreen(COLOR_RED);
-      drawString5x7(10,50,"GAME OVER :(", COLOR_BLACK,COLOR_RED);
-      
-      
+      clearScreen(COLOR_PINK);
+      drawString5x7(10,50,"Game over, loser", COLOR_BLACK,COLOR_PINK);
+      drawString5x7(5,80,"U made baby yoda cry", COLOR_BLACK,COLOR_PINK);
+     
     }
+
     //moving left
     if((switches&(1<<0))==0){
       ml0.velocity.axes[1]=0;
@@ -335,26 +304,61 @@ void wdt_c_handler(){
         redrawScreen = 1; 
     }
 
-//updates time using interrupts. (close to a sec)
+//point counter, about 1 pt per sec
   if(count==180){
      
-    if(sec>=10){
-        itoa(sec,str,10);
-    drawString5x7(1,150,"TIMER",COLOR_GREEN,COLOR_BLACK);
+    if(points>=10){
+        itoa(points,str,10);
+    drawString5x7(1,150,"Points",COLOR_GREEN,COLOR_BLACK);
     drawString5x7(40,150,str,COLOR_GREEN,COLOR_BLACK);
     redrawScreen =1;
     }
-    else if(sec<=10){
-    itoa(sec,str,10);
-    drawString5x7(1,150,"TIMER",COLOR_GREEN,COLOR_BLACK);
+    else if(points<=10){
+    itoa(points,str,10);
+    drawString5x7(1,150,"Points",COLOR_GREEN,COLOR_BLACK);
     drawString5x7(40,150,"0",COLOR_GREEN,COLOR_BLACK);
     drawString5x7(46,150,str,COLOR_GREEN,COLOR_BLACK);
     redrawScreen =1;
     }
-    sec--;
+    points++;
     //reset interrupts
     count = 0;
   }
   count++;
+}
+
+void main(){
+  configureClocks();
+  lcd_init();
+  shapeInit();
+  clearScreen(COLOR_BLACK);
+  layerInit(&layer0);
+  layerInit(&layer1);
+  layerInit(&layer2);
+  layerInit(&layer3);
+  layerInit(&layer4);
+  layerInit(&layer5);
+  layerInit(&layer9);
+  layerDraw(&layer0);
+  buzzer_init();
+  p2sw_init(15);
+  layerGetBounds(&fieldLayer, &fieldFence);
+  or_sr(0x8);
+  enableWDTInterrupts();
+  while(1){
+    while(!redrawScreen) {
+        or_sr(0x10);
+    }
+    if(points>=1){
+    movLayerDraw(&ml0, &layer9);
+    movLayerDraw(&ml1, &layer0);
+    movLayerDraw(&ml2, &layer1);
+    movLayerDraw(&ml3, &layer2);
+    movLayerDraw(&ml4, &layer3);
+    movLayerDraw(&ml5, &layer4);
+    movLayerDraw(&ml6, &layer5);
+    redrawScreen=0;
+    }
+    }
 }
 

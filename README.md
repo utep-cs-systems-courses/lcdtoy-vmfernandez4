@@ -1,3 +1,24 @@
+# Project3 LCD Toy
+
+## Interacting with the MSP-430
+### Button Presses
+- Pressing button S1 turns moves the player to the left
+- Pressing button S2 turns moves the player down
+- Pressing button S3 turns moves the player up
+- Pressing button S4 turns moves the player to the right
+
+## To Run game 
+- cd Into the project folder
+- make load
+- Enjoy
+      
+##OBJECTIVE
+The objective of this game is to get the player across the maze unto the winning door.
+In order to win you must get the player to the door without hitting the walls. If you hit 150 points you lose.
+If the player loses, the game will load a screen saying that the player lost and a song.
+If the player wins, the game will load a screen saying that  the player won with no song.
+
+(Save for reference)
 # Project 3: Graphical LCD Toy 
 ## Introduction
 
