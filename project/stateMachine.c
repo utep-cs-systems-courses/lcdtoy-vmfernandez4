@@ -43,7 +43,7 @@ void state_advance()
   case 0: //call to draw the hourglass in renderings
     if(switch_state_changed)
     {
-      buzzer_set_period(0[0]);
+      buzzer_set_period(0);
       drawHourGlass();
       switch_state_changed = 0; 
     }
