@@ -104,6 +104,8 @@ void state_advance()
     if(switch_state_changed)
     {
       buzzer_set_period(0);
+      drawString5x7(55, 115, "NOM", COLOR_BLACK, COLOR_YELLOW);
+      drawEatenDonut(60, 48, 12, 12, 3, COLOR_YELLOW);
     }
     break;
   }
