@@ -12,7 +12,7 @@
 
 //defines everything you need for the lcd toy
 int redrawScreen = 1;
-char playing_note = 0, song_length = 54, jurrasic_enable, jaw_count = 0; 
+
 
 void main()
 {
@@ -48,21 +48,6 @@ void wdt_c_handler()
   P1OUT |= GREEN_LED; //turns on green led when cpu is on
   static char  blink = 0;
 
-  if(blink == delay)
-  {
-    if(jurrasic_enable) //jurrasic enables signifies when to play the song
-    {
-      playing_note++; 
-      playing_note = playing_note % song_length; //keeps track which note is going to play next
-    }
-    redrawScreen = 1; //makes sure the screen gets redrawn
-    blink= 0;
-  }
-  
-  if(!jurrasic_enable) //makes sure the song restarts when its activated again
-  {
-    playing_note = 0; 
-  }
   blink++;
   P1OUT &= ~GREEN_LED;  //turns of the green led when cpu is off
 }

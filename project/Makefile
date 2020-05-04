@@ -1,8 +1,8 @@
 all: libLcd.a lcddemo.elf
 
 CPU             = msp430g2553
-CFLAGS          = -mmcu=${CPU} -Os -I../h
-LDFLAGS 	= -L/opt/ti/msp430_gcc/include -L../lib
+CFLAGS          = -mmcu=${CPU} -Os -I../h 
+LDFLAGS 	= -L/opt/ti/msp430_gcc/include -L../lib 
 #switch the compiler (for the internal make rules)
 CC              = msp430-elf-gcc
 AS              = msp430-elf-gcc -mmcu=${CPU} -c
@@ -28,4 +28,3 @@ load.elf: main.o switches.o buzzer.o stateMachine.o wdt_handler.o  p2_interrupt_
 
 load: load.elf
 	msp430loader.sh $^
-

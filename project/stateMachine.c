@@ -8,32 +8,13 @@
 //the following defines the varialbes needed for the stateMachine
 char state = 3, switch_state_change, delay, donut_enable = 0, toggle_animation = 1;
 
-//the following is the music score for the quick version of jurrasic park theme song
-int music_score[54][2] =
-  {
-  {Bb5, Three}, {Bb5, Eigth}, {A5, Eigth}, {Bb5, Half}, {C6, Eigth}, {C6, Half}, {Eb6, Eigth},
-  {Eb6, Three}, {D6, Eigth}, {Bb5, Eigth}, {C6, Half}, {A5, Eigth}, {F5, Quarter}, {D6, Eigth},
-  {Bb5, Eigth}, {C6, Three}, {F6, Eigth}, {Bb5, Eigth}, {Eb6, Half}, {D6, Eigth}, {D6, Half},
-  {C6, Eigth}, {C6, Full}, {Bb6, Eigth}, {A6, Eigth}, {Bb6, Quarter}, {F6, Quarter},
-  {Eb6, Quarter}, {Bb6, Eigth}, {A6, Eigth}, {Bb6, Half}, {F6, Quarter}, {Bb5, Quarter},
-  {Ab6, Full}, {Bb6, Eigth}, {A6, Eigth}, {Bb6, Quarter}, {F6, Eigth}, {E6, Eigth}, {F6, Quarter},
-  {Eb6, Eigth},{D6, Eigth}, {Eb6, Quarter}, {C6, Eigth}, {Bb5, Eigth}, {C6, Quarter}, {Bb6, Eigth},
-  {A6, Eigth}, {Bb6, Quarter}, {F6, Eigth}, {E6, Eigth}, {F6, Half}, {A6, Full}, {Bb6, Full}
-  }; 
-
 //the following displayes the instructions for when the program is first loaded into the msp430
 void loadInstructions()
 {
   drawInstructions();
 }
 
-//The following function instructs on how to play the specifies not and its delay (total time) 
-void play_note()
-{
-  if(playing_note %3 == 0) //toggles the animation every third note
-    animate();
-  delay = music_score[playing_note][1];
-  buzzer_set_period(music_score[playing_note][0]);
+
 }
 
 //this function animates the t-rex using two different position for the arms and mouth

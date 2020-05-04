@@ -45,6 +45,21 @@ void drawBox(u_char rowOff, u_char colOff, u_char width, u_char height,
   }
 }
 
+//draws a upsaideown stair case-like figure to eares the portion where the donut is eaten
+void drawEatenDonut(u_char rowOff, u_char colOff, u_char width, u_char height,
+		u_char stepSize, u_int colorBGR)
+{
+  u_char r, c, colRight, colLeft;
+  for(r= 0; r <= height; r++)
+  {
+    colLeft = 0;
+    colRight = width - (r/stepSize);
+    for(c = colLeft; c <= colRight; c++)
+    {
+      drawPixel(colOff+c, rowOff+r, colorBGR);
+    }
+  }
+}
 
 //this function draws the somple hourglass comprimised of four seperate triangles
 void drawHourGlass()
@@ -64,6 +79,16 @@ void drawDonut()
   drawBox(rowBase, colBase, 33, 33, 1, 1, COLOR_BROWN); //donut base
   drawBox(rowBase +12, colBase +12, 9, 9, 1, 1, COLOR_YELLOW); //donut hole
 
+  //below are donute decorations
+  drawTriangle(rowBase +6, colBase + 3, 1, 3, 3, 1, 0, COLOR_CYAN); 
+  drawTriangle(rowBase + 6, colBase + 18, 1, 3, 3, 1, 3, COLOR_HOT_PINK);
+  drawTriangle(rowBase + 6, colBase + 18, 1, 3, 3, 1, 1, COLOR_HOT_PINK);
+  drawTriangle(rowBase + 9, colBase + 27, 1, 3, 3, 1, 0, COLOR_RED);
+  drawTriangle(rowBase + 18, colBase + 6, 1, 3, 3, 1, 0, COLOR_GREEN);
+  drawTriangle(rowBase + 18, colBase + 6, 1, 3, 3, 1, 2, COLOR_GREEN);
+  drawTriangle(rowBase + 24, colBase + 27,1, 3, 3, 1, 2, COLOR_ORANGE);
+  drawTriangle(rowBase + 30, colBase + 27,1, 3, 3, 1, 3, COLOR_ORANGE);
+  drawTriangle(rowBase + 27, colBase + 9, 1, 4, 4, 1, 0, COLOR_HOT_PINK);
 }
 
 //this function draws the inital starting position of the t-rex for the jurrasic park section
@@ -90,9 +115,9 @@ void drawInstructions()
 {
   u_char baseRow = 15, baseCol = 2; 
   clearScreen(COLOR_BLACK);
-  drawString5x7(baseCol, baseRow, "Toy Menu:", COLOR_WHITE, COLOR_BLACK);
-  drawString5x7(baseCol, baseRow + 20, "Switch 1: ", COLOR_PURPLE, COLOR_BLACK);
-  drawString5x7(baseCol, baseRow + 40, "Switch 2: ", COLOR_YELLOW, COLOR_BLACK);
-  drawString5x7(baseCol, baseRow + 60, "Switch 3: ", COLOR_RED, COLOR_BLACK);
-  drawString5x7(baseCol, baseRow + 80, "Swtich 4: Instructions", COLOR_WHITE, COLOR_BLACK);
+  drawString5x7(baseCol, baseRow, "Welcome to my LCD Toy", COLOR_WHITE, COLOR_BLACK);
+  drawString5x7(baseCol, baseRow + 20, "Button 1: Hourglass", COLOR_PURPLE, COLOR_BLACK);
+  drawString5x7(baseCol, baseRow + 40, "Button 2: Donut", COLOR_YELLOW, COLOR_BLACK);
+  drawString5x7(baseCol, baseRow + 60, "Button 3: Jurr. Park", COLOR_RED, COLOR_BLACK);
+  drawString5x7(baseCol, baseRow + 80, "Button 4: Directions", COLOR_WHITE, COLOR_BLACK);
 }

@@ -2,15 +2,8 @@
 #include "libTimer.h"
 #include "buzzer.h"
 
-
-void timer_delay(unsigned int milliSeconds){ // Hence _delay_cycles won't work because of the CPU Clock (Example on LEDS blinking)
-    unsigned int counter = 0;
-    for (counter = 0; counter <= milliSeconds; counter++){
-       __delay_cycles(2000);
-    }
-}
-
-void buzzer_init(){
+void buzzer_init()
+{
     /* 
        Direct timer A output "TA0.1" to P2.6.  
         According to table 21 from data sheet:
@@ -18,16 +11,15 @@ void buzzer_init(){
           P2SEL.6 must be 1
         Also: P2.6 direction must be output
     */
-      timerAUpmode();		/* used to drive speaker */
-      P2SEL2 &= ~(BIT6 | BIT7);
-      P2SEL &= ~BIT7; 
-      P2SEL |= BIT6;
-      P2DIR = BIT6;		/* enable output to speaker (P2.6) */
-
+    timerAUpmode();		/* used to drive speaker */
+    P2SEL2 &= ~(BIT6 | BIT7);
+    P2SEL &= ~BIT7; 
+    P2SEL |= BIT6;
+    P2DIR = BIT6;		/* enable output to speaker (P2.6) */
 }
 
-void buzzer_set_period(short cycles)
+void buzzer_set_period(short cycles) /* buzzer clock = 2MHz.  (period of 1k results in 2kHz tone) */
 {
   CCR0 = cycles; 
-  CCR1 = cycles >> 1;		/* one half cycle */
+  CCR1 = cycles >> 1;	       /* one half cycle */ 
 }
