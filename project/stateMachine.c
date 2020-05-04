@@ -15,8 +15,6 @@ void loadInstructions()
 }
 
 
-}
-
 //this function animates the t-rex using two different position for the arms and mouth
 void animate()
 {
@@ -45,7 +43,7 @@ void state_advance()
   case 0: //call to draw the hourglass in renderings
     if(switch_state_changed)
     {
-      buzzer_set_period(0);
+      buzzer_set_period(0[0]);
       drawHourGlass();
       switch_state_changed = 0; 
     }
@@ -69,7 +67,6 @@ void state_advance()
       drawJurrasicPark();
       switch_state_changed = 0;
     }
-    play_note(); //playes the music note
     break;
     
   case 3: //calls to display the instructions
