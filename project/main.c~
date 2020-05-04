@@ -1,0 +1,147 @@
+#include <msp430.h>
+#include <libTimer.h>
+#include <lcdutils.h>
+#include <lcddraw.h>
+#include <p2switches.h>
+#include <shape.h>
+#include <abCircle.h>
+#include <stdlib.h>
+
+int redrawScreen = 1; 
+u_int bgColor =COLOR_BLUE;
+int flag =0;
+
+//Bounds rect
+AbRectOutline fieldOutline = {
+  abRectOutlineGetBounds, abRectOutlineCheck,
+  {screenWidth , screenHeight}
+};
+//layerGetBounds needs this v
+Layer fieldLayer ={
+  (AbShape*)&fieldOutline,
+  {screenWidth/2,screenHeight/2},
+  {0,0},{0,0},
+  COLOR_BLACK,
+  0
+};
+
+AbRect rect ={abRectGetBounds,abRectCheck,{45,3}};
+//COINS TO GET-----------------------------------
+
+Layer layer6={
+  (AbShape*)&circle6,
+  {(screenWidth/3-25), (screenHeight/2+20)},
+  {0,0},{0,0},
+  COLOR_YELLOW,
+  &fieldLayer
+};
+//END gate ---------------------------------------
+Layer layer5 ={
+  (AbShape *)&rect,
+  {screenWidth/3+50, (screenHeight/2-75)},
+  {0,0},{0,0},
+  COLOR_GREEN,
+  &layer6
+};
+//Maze blocks------------------------------------
+Layer layer4 ={
+  (AbShape *)&rect,
+  {screenWidth/3, (screenHeight/2-75)},
+  {0,0},{0,0},
+  COLOR_RED,
+  &layer5
+};
+Layer layer3 ={
+  (AbShape *)&rect,
+  {screenWidth/3+40, (screenHeight/2)-45},
+  {0,0},{0,0},
+  COLOR_RED,
+  &layer4
+};
+Layer layer2 ={
+  (AbShape *)&rect,
+  {screenWidth/3, (screenHeight/2-10)},
+  {0,0},{0,0},
+  COLOR_RED,
+  &layer3
+};
+Layer layer1 ={
+  (AbShape *)&rect,
+  {screenWidth/3+40, (screenHeight/2)+25},
+  {0,0},{0,0},
+  COLOR_RED,
+  &layer2
+};
+Layer layer0 ={
+  (AbShape *)&rect,
+  {screenWidth/3, (screenHeight/2)+60},
+  {0,0},{0,0},
+  COLOR_RED,
+  &layer1
+};
+
+typedef struct MovLayer_s{
+  Layer *layer;
+  Vec2 velocity;
+  struct MovLayer_s *next;
+} MovLayer;
+  
+//Score Board----------------------------------------------------------------------------------------------------
+void wdt_c_handler(){
+  static short count =0; //char
+  static int sec =59; //int 
+  /*When I want the time to update
+  /-----------------------------------------
+  / start time when switch on is pressed */
+  
+  u_int switches = p2sw_read();
+  if((switches&(1<<0))==0){
+      flag =1;
+}
+  if(flag){
+      //every second update
+  if(count==180){
+    //clear the screen and display fail
+    if(sec==0){
+      clearScreen(COLOR_RED);
+      redrawScreen=1; 
+      drawString5x7(10,50,"GAME OVER. ):", COLOR_BLACK,COLOR_RED);
+      IE1=0;
+    }
+    //When it is double digits, the placement is fine
+    else if (sec >= 10){
+    char str[3];
+    itoa(sec,str,10);
+    drawString5x7(1,150,"TIMER",COLOR_GREEN,COLOR_BLUE);
+    drawString5x7(40,150,str,COLOR_GREEN,COLOR_BLUE);
+    redrawScreen = 1;
+    }
+    //When it is single digits i have to manually place the 0 infront.
+    else {
+      char str[2];
+      str[0] = '0';
+      str[1] = '0' + sec;
+      drawString5x7(40,150,str,COLOR_GREEN,COLOR_BLUE);
+      redrawScreen = 1; 
+    }
+    //update time
+    sec--;
+    //reset interrupts
+    count = 0;
+  }
+  count++;
+  }
+}
+void main(){
+  configureClocks();
+  lcd_init();
+  shapeInit();
+  clearScreen(COLOR_BLUE);
+  layerInit(&layer0);
+  layerDraw(&layer0);
+  p2sw_init(15);
+  // layerGetBounds(&fieldLayer, &fieldFence);
+  // clearScreen(COLOR_BLUE);
+  enableWDTInterrupts();
+  or_sr(0x8);
+}
